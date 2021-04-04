@@ -4,30 +4,91 @@ import { useState, useEffect } from "react";
 import firebaseInit from "../../firebase/firebaseInit";
 import firebaseWrite from "../../firebase/firebaseWrite";
 import firebaseRead from "../../firebase/firebaseRead";
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box, Heading, Text, Button, Tag, TagLabel, Badge, useToast } from "@chakra-ui/react";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 
-export default function Search({ data }) {
+import styles from "../../styles/Home.module.css";
+
+import Navbar from "../../components/navigation/Navbar";
+
+export default function Search({ data, places }) {
   const router = useRouter();
   const { zipcode } = router.query;
-  console.log(data);
+  const toast = useToast();
 
   const [index, setIndex] = useState(0);
   const [zipcodeInfo, setZipcodeInfo] = useState(data.data);
+  const id = "count-toast";
+
+  if (!toast.isActive(id)) {
+    toast({
+      id,
+      title: `Current Vaccine Count in zipcode ${zipcode}: ${zipcodeInfo.vaccine}`,
+      duration: 6000,
+      isClosable: true,
+    });
+  }
+
+  const next = () => {
+    if (index + 1 > zipcodeInfo.people.length - 1) {
+      setIndex(0);
+    } else {
+      setIndex(index + 1);
+    }
+  };
+
+  const previous = () => {
+    if (index - 1 < 0) {
+      setIndex(zipcodeInfo.people.length - 1);
+    } else {
+      setIndex(index - 1);
+    }
+  };
 
   return (
-    <div>
-      <h1>{zipcodeInfo.people[index].title}</h1>
-      <p>{zipcodeInfo.people[index].message}</p>
-      <p>{zipcodeInfo.people[index].telephone}</p>
-
-      <button onClick={() => setIndex(index + 1)}>Next</button>
-    </div>
+    <>
+      <Navbar />
+      <div className={styles.mainContainer}>
+        <div className={styles.messagesContainer}>
+          <Box width={"300px"} border={"1px"} borderRadius={"lg"} textAlign={"center"} marginTop={"40px"}>
+            <Heading borderBottom={"1px solid black"} padding={"10px"}>
+              {zipcodeInfo.people[index].title} <br />
+              <Badge colorScheme="green">{zipcodeInfo.people[index].tag}</Badge>
+            </Heading>
+            <Text padding={"10px"}>{zipcodeInfo.people[index].message}</Text>
+            <Button colorScheme={"teal"} margin={"10px"}>
+              View Contact Information
+            </Button>
+          </Box>
+          <Box margin={"10px"} display={"flex"} justifyContent={"center"}>
+            <ArrowBackIcon onClick={() => previous()} cursor={"pointer"} fontSize={"30px"} />
+            <ArrowForwardIcon onClick={() => next()} cursor={"pointer"} fontSize={"30px"} />
+          </Box>
+        </div>
+        <div>
+          <Heading>Your Local Convenience Stores</Heading>
+          <div className={styles.placesContainer}>
+            {places.map((place) => (
+              <div className={styles.place}>
+                <Heading>{place.name}</Heading>
+                <Text>{place.address}</Text>
+                <Button>
+                  <a href={`${place.url}`}>Go To Website</a>
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
 Search.getInitialProps = async ({ query }) => {
   const data = await fetch(`http://localhost:3000/api/${query.zipcode}`);
   const response = await data.json();
-  return { data: response };
+
+  const placeData = await fetch(`http://localhost:3000/api/places/${query.zipcode}`);
+  const placeResponse = await placeData.json();
+  return { data: response, places: placeResponse.data };
 };
