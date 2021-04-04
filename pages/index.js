@@ -30,7 +30,7 @@ export default function Home() {
             <Input backgroundColor={"white"} placeholder="Enter Zipcode" onChange={(e) => setZipcode(e.target.value)} />
             <InputRightElement
               children={
-                <a href={`http://localhost:3000/zipcode/${zipcode}`}>
+                <a href={`http://covidhub.vercel.app/zipcode/${zipcode}`}>
                   <SearchIcon />
                 </a>
               }

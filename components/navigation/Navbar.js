@@ -32,7 +32,7 @@ export default function Navbar() {
             <Input placeholder="Enter Zipcode" onChange={(e) => setQuery(e.target.value)} />
             <InputRightElement
               children={
-                <a href={`http://localhost:3000/zipcode/${query}`}>
+                <a href={`http://covidhub.vercel.app/zipcode/${query}`}>
                   <SearchIcon />
                 </a>
               }
@@ -41,7 +41,7 @@ export default function Navbar() {
         </Stack>
       </div>
       <div>
-        <Link href="http://localhost:3000/add">
+        <Link href="http://covidhub.vercel.app/add">
           <IconButton colorScheme="blue" aria-label="Add Message" icon={<AddIcon />} />
         </Link>
       </div>

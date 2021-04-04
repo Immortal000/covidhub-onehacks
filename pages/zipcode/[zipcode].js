@@ -87,10 +87,10 @@ export default function Search({ data, places }) {
 }
 
 Search.getInitialProps = async ({ query }) => {
-  const data = await fetch(`http://localhost:3000/api/${query.zipcode}`);
+  const data = await fetch(`http://covidhub.vercel.app/api/${query.zipcode}`);
   const response = await data.json();
 
-  const placeData = await fetch(`http://localhost:3000/api/places/${query.zipcode}`);
+  const placeData = await fetch(`http://covidhub.vercel.app/api/places/${query.zipcode}`);
   const placeResponse = await placeData.json();
   return { data: response, places: placeResponse.data };
 };
