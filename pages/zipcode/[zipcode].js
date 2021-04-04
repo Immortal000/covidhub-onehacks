@@ -20,15 +20,6 @@ export default function Search({ data, places }) {
   const [zipcodeInfo, setZipcodeInfo] = useState(data.data);
   const id = "count-toast";
 
-  if (!toast.isActive(id)) {
-    toast({
-      id,
-      title: `Current Vaccine Count in zipcode ${zipcode}: ${zipcodeInfo.vaccine}`,
-      duration: 6000,
-      isClosable: true,
-    });
-  }
-
   const next = () => {
     if (index + 1 > zipcodeInfo.people.length - 1) {
       setIndex(0);
@@ -44,6 +35,17 @@ export default function Search({ data, places }) {
       setIndex(index - 1);
     }
   };
+
+  useEffect(() => {
+    if (!toast.isActive(id)) {
+      toast({
+        id,
+        title: `Current Vaccine Count in zipcode ${zipcode}: ${zipcodeInfo.vaccine}`,
+        duration: 6000,
+        isClosable: true,
+      });
+    }
+  }, []);
 
   return (
     <>
