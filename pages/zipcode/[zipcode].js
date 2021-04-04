@@ -4,7 +4,23 @@ import { useState, useEffect } from "react";
 import firebaseInit from "../../firebase/firebaseInit";
 import firebaseWrite from "../../firebase/firebaseWrite";
 import firebaseRead from "../../firebase/firebaseRead";
-import { Box, Heading, Text, Button, Tag, TagLabel, Badge, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Text,
+  Button,
+  Tag,
+  TagLabel,
+  Badge,
+  useToast,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  PopoverCloseButton,
+  PopoverHeader,
+  PopoverBody,
+  PopoverArrow,
+} from "@chakra-ui/react";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 
 import styles from "../../styles/Home.module.css";
@@ -58,9 +74,19 @@ export default function Search({ data, places }) {
               <Badge colorScheme="green">{zipcodeInfo.people[index].tag}</Badge>
             </Heading>
             <Text padding={"10px"}>{zipcodeInfo.people[index].message}</Text>
-            <Button colorScheme={"teal"} margin={"10px"}>
-              View Contact Information
-            </Button>
+            <Popover>
+              <PopoverTrigger>
+                <Button colorScheme={"teal"} margin={"10px"}>
+                  View Contact Information
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverHeader>Contact Information</PopoverHeader>
+                <PopoverBody>{zipcodeInfo.people[index].telephone}</PopoverBody>
+              </PopoverContent>
+            </Popover>
           </Box>
           <Box margin={"10px"} display={"flex"} justifyContent={"center"}>
             <ArrowBackIcon onClick={() => previous()} cursor={"pointer"} fontSize={"30px"} />
